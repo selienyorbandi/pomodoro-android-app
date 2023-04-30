@@ -17,6 +17,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView timerTextView;
     private ImageView startButton, stopButton;
 
+    private boolean isRunning = false;
+    private long timeLeftInMillis = 25 * 60 * 1000;
+
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +33,11 @@ public class MainActivity extends AppCompatActivity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startTimer();
+                if (isRunning) {
+                    pauseTimer();
+                } else {
+                    startTimer();
+                }
             }
         });
 
@@ -43,33 +50,48 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startTimer() {
-        startButton.setEnabled(false);
+        startButton.setImageResource(R.drawable.ic_pause);
         stopButton.setEnabled(true);
+        isRunning = true;
 
-        timer = new CountDownTimer(25 * 60 * 1000, 1000) {
+        timer = new CountDownTimer(timeLeftInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                int minutes = (int) (millisUntilFinished / 1000) / 60;
-                int seconds = (int) (millisUntilFinished / 1000) % 60;
-                String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
-                timerTextView.setText(timeLeftFormatted);
+                timeLeftInMillis = millisUntilFinished;
+                updateCountdownText();
             }
 
             @Override
             public void onFinish() {
+                isRunning = false;
                 timerTextView.setText("00:00");
-                startButton.setEnabled(true);
+                startButton.setImageResource(R.drawable.ic_play);
                 stopButton.setEnabled(false);
             }
-        };
+        }.start();
+    }
 
-        timer.start();
+    private void pauseTimer() {
+        startButton.setImageResource(R.drawable.ic_play);
+        stopButton.setEnabled(true);
+        isRunning = false;
+
+        timer.cancel();
     }
 
     private void stopTimer() {
-        startButton.setEnabled(true);
+        startButton.setImageResource(R.drawable.ic_play);
         stopButton.setEnabled(false);
+        isRunning = false;
+        timeLeftInMillis = 25 * 60 * 1000;
+        updateCountdownText();
         timer.cancel();
-        timerTextView.setText("25:00");
+    }
+
+    private void updateCountdownText() {
+        int minutes = (int) (timeLeftInMillis / 1000) / 60;
+        int seconds = (int) (timeLeftInMillis / 1000) % 60;
+        String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+        timerTextView.setText(timeLeftFormatted);
     }
 }

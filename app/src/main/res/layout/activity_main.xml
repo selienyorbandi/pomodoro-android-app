@@ -9,7 +9,7 @@
         android:id="@+id/timerTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="25:00"
+        android:text="@string/_25_00"
         android:textSize="96sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/startButton"

@@ -7,4 +7,5 @@
     <string name="stop_button_description">Parar</string>
     <string name="start_button_text">Comenzar</string>
     <string name="stop_button_text">Detener</string>
+    <string name="_25_00">25:00</string>
 </resources>
